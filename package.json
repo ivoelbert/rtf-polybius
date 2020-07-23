@@ -1,19 +1,39 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "date-fns": "^2.11.1",
-    "gray-matter": "^4.0.2",
-    "next": "9.3.5",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "remark": "^12.0.0",
-    "remark-html": "^11.0.1"
-  }
+    "name": "my-app",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "prettify": "prettier --write \"./**/*.ts\" \"./**/*.js\" \"./**/*.jsx\" \"./**/*.tsx\" \"./**/*.css\""
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged"
+        }
+    },
+    "dependencies": {
+        "date-fns": "^2.11.1",
+        "drei": "^0.0.64",
+        "gray-matter": "^4.0.2",
+        "next": "9.3.5",
+        "next-transpile-modules": "^3.3.0",
+        "react": "16.13.1",
+        "react-dom": "16.13.1",
+        "react-spring": "^8.0.27",
+        "react-three-fiber": "^4.2.17",
+        "remark": "^12.0.0",
+        "remark-html": "^11.0.1",
+        "sass": "^1.26.10",
+        "three": "^0.118.3"
+    },
+    "devDependencies": {
+        "@types/node": "^14.0.24",
+        "@types/react": "^16.9.43",
+        "husky": "^4.2.5",
+        "prettier": "^2.0.5",
+        "pretty-quick": "^2.0.1",
+        "typescript": "^3.9.7"
+    }
 }
