@@ -1,6 +1,6 @@
 import { isNil } from '../utils/utils';
 import { useEffect } from 'react';
-import { useSpring, AnimatedValue } from 'react-spring';
+import { useSpring, SpringValues } from 'react-spring';
 
 // All posible inputs
 export enum Movements {
@@ -50,20 +50,18 @@ export const KEYBOARD_MAPPING: KeyMapping = {
 };
 
 type OverwriteKeys<A, B> = { [K in keyof A]: K extends keyof B ? B[K] : A[K] };
-type MoveStateSpring = AnimatedValue<
-    Pick<OverwriteKeys<MoveState, React.CSSProperties>, Movements>
->;
+type MoveStateSpring = SpringValues<Pick<OverwriteKeys<MoveState, React.CSSProperties>, Movements>>;
 
 export const readMovementSpring = (moveState: MoveStateSpring): MoveState => ({
-    [Movements.up]: moveState[Movements.up].getValue(),
-    [Movements.down]: moveState[Movements.down].getValue(),
-    [Movements.left]: moveState[Movements.left].getValue(),
-    [Movements.right]: moveState[Movements.right].getValue(),
-    [Movements.forwards]: moveState[Movements.forwards].getValue(),
-    [Movements.backwards]: moveState[Movements.backwards].getValue(),
-    [Movements.rollLeft]: moveState[Movements.rollLeft].getValue(),
-    [Movements.rollRight]: moveState[Movements.rollRight].getValue(),
-    [Movements.shoot]: moveState[Movements.shoot].getValue(),
+    [Movements.up]: moveState[Movements.up].get(),
+    [Movements.down]: moveState[Movements.down].get(),
+    [Movements.left]: moveState[Movements.left].get(),
+    [Movements.right]: moveState[Movements.right].get(),
+    [Movements.forwards]: moveState[Movements.forwards].get(),
+    [Movements.backwards]: moveState[Movements.backwards].get(),
+    [Movements.rollLeft]: moveState[Movements.rollLeft].get(),
+    [Movements.rollRight]: moveState[Movements.rollRight].get(),
+    [Movements.shoot]: moveState[Movements.shoot].get(),
 });
 
 /**
@@ -71,6 +69,8 @@ export const readMovementSpring = (moveState: MoveStateSpring): MoveState => ({
  */
 export const useControls = (keyMapping: KeyMapping) => {
     const [moveState, set] = useSpring(() => IDLE_MOVE_STATE);
+
+    moveState;
 
     useEffect(() => {
         const keyDownHandler = (e: KeyboardEvent): void => {

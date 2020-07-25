@@ -4,6 +4,10 @@ import { useFrame, CanvasContext } from 'react-three-fiber';
 import { CENTER_RADIUS, MAX_RADIUS, MIN_RADIUS } from '../../utils/constants';
 import { assertExists } from '../../utils/utils';
 import { Vectors } from '../../utils/vectorUtils';
+import { useAsteroidRegister } from './AsteroidContext';
+import { useSpring, a, config } from 'react-spring/three';
+
+export const ASTEROID_RADIUS = CENTER_RADIUS / 3;
 
 const ANG_VELOCITY = 2;
 const RAD_VELOCITY = 1;
@@ -27,6 +31,13 @@ export const Asteroid: React.FC<AsteroidProps> = ({ normalVector, isLive, dispos
     const transform = useRef<AsteroidTranform>(initialTransform(normalVector));
 
     const mesh = useRef<THREE.Mesh>();
+
+    useAsteroidRegister(mesh, isLive);
+
+    const { spring } = useSpring({
+        spring: Number(isLive),
+        config: config.stiff,
+    });
 
     useEffect(() => {
         transform.current = initialTransform(normalVector);
@@ -55,10 +66,10 @@ export const Asteroid: React.FC<AsteroidProps> = ({ normalVector, isLive, dispos
     });
 
     return (
-        <mesh ref={mesh} visible={isLive}>
-            <sphereBufferGeometry attach="geometry" args={[1, 10, 6]} />
+        <a.mesh ref={mesh} visible={isLive} scale-x={spring} scale-y={spring} scale-z={spring}>
+            <sphereBufferGeometry attach="geometry" args={[ASTEROID_RADIUS, 10, 6]} />
             <meshBasicMaterial attach="material" color={0x2bfa2b} wireframe={true} />
-        </mesh>
+        </a.mesh>
     );
 };
 
