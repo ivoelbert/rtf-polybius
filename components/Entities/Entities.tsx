@@ -4,6 +4,7 @@ import { Ship } from '../Ship';
 import { Effects } from '../Effects';
 import { Asteroids } from '../Asteroid/Asteroids';
 import { EntitiesProvider } from './EntitiesProvider';
+import { Bullets } from '../Bullets/Bullets';
 
 export const Entities: React.FC = () => {
     return (
@@ -11,6 +12,7 @@ export const Entities: React.FC = () => {
             <Center />
             <Asteroids />
             <Ship />
+            <Bullets />
             <Effects />
         </EntitiesProvider>
     );

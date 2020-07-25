@@ -1,6 +1,13 @@
 import { isNil } from '../utils/utils';
-import { useEffect } from 'react';
-import { useSpring, SpringValues } from 'react-spring';
+import { useEffect, useRef } from 'react';
+import { useSpring, SpringValues, config } from 'react-spring';
+
+interface AnimationConfig {
+    mass: number;
+    tension: number;
+    friction: number;
+    clamp: boolean;
+}
 
 // All posible inputs
 export enum Movements {
@@ -15,7 +22,22 @@ export enum Movements {
     shoot = 'MOVEMENT_shoot',
 }
 
-export const IDLE_MOVE_STATE: MoveState = {
+type AnimatedMovements =
+    | Movements.up
+    | Movements.down
+    | Movements.left
+    | Movements.right
+    | Movements.forwards
+    | Movements.backwards
+    | Movements.rollLeft
+    | Movements.rollRight;
+
+type SnapMovements = Movements.shoot;
+
+type AnimatedMoveState = Record<AnimatedMovements, number>;
+type SnapMoveState = Record<SnapMovements, number>;
+
+const IDLE_ANIMATED_MOVE_STATE: AnimatedMoveState & { config: Partial<AnimationConfig> } = {
     [Movements.up]: 0,
     [Movements.down]: 0,
     [Movements.left]: 0,
@@ -24,14 +46,17 @@ export const IDLE_MOVE_STATE: MoveState = {
     [Movements.backwards]: 0,
     [Movements.rollLeft]: 0,
     [Movements.rollRight]: 0,
+    config: config.default,
+};
+
+const IDLE_SNAP_MOVE_STATE: SnapMoveState = {
     [Movements.shoot]: 0,
 };
 
-/**
- * for each possible movement we have a number in [0, 1] instead of a boolean
- * so we can support analog input
- */
-export type MoveState = Record<Movements, number>;
+// TODO: This would look horrible if we introduce more snap movements
+const isSnap = (movement: Movements): movement is SnapMovements => {
+    return movement === Movements.shoot;
+};
 
 // Map key codes to movements
 export type KeyMapping = Record<string, Movements>;
@@ -50,9 +75,11 @@ export const KEYBOARD_MAPPING: KeyMapping = {
 };
 
 type OverwriteKeys<A, B> = { [K in keyof A]: K extends keyof B ? B[K] : A[K] };
-type MoveStateSpring = SpringValues<Pick<OverwriteKeys<MoveState, React.CSSProperties>, Movements>>;
+type MoveStateSpring = SpringValues<
+    Pick<OverwriteKeys<AnimatedMoveState, React.CSSProperties>, AnimatedMovements>
+>;
 
-export const readMovementSpring = (moveState: MoveStateSpring): MoveState => ({
+export const readMovementSpring = (moveState: MoveStateSpring): AnimatedMoveState => ({
     [Movements.up]: moveState[Movements.up].get(),
     [Movements.down]: moveState[Movements.down].get(),
     [Movements.left]: moveState[Movements.left].get(),
@@ -61,16 +88,19 @@ export const readMovementSpring = (moveState: MoveStateSpring): MoveState => ({
     [Movements.backwards]: moveState[Movements.backwards].get(),
     [Movements.rollLeft]: moveState[Movements.rollLeft].get(),
     [Movements.rollRight]: moveState[Movements.rollRight].get(),
-    [Movements.shoot]: moveState[Movements.shoot].get(),
 });
 
 /**
  * the useControls hook returns a spring to animate MoveStates.
  */
-export const useControls = (keyMapping: KeyMapping) => {
-    const [moveState, set] = useSpring(() => IDLE_MOVE_STATE);
+export const useControls = (
+    keyMapping: KeyMapping
+): [MoveStateSpring, React.MutableRefObject<SnapMoveState>] => {
+    const [animatedMoveState, setAnimated] = useSpring<AnimatedMoveState>(
+        () => IDLE_ANIMATED_MOVE_STATE
+    );
 
-    moveState;
+    const snapMoveState = useRef<SnapMoveState>(IDLE_SNAP_MOVE_STATE);
 
     useEffect(() => {
         const keyDownHandler = (e: KeyboardEvent): void => {
@@ -80,7 +110,11 @@ export const useControls = (keyMapping: KeyMapping) => {
                 return;
             }
 
-            set({ [movement]: 1 });
+            if (isSnap(movement)) {
+                snapMoveState.current[movement] = 1;
+            } else {
+                setAnimated({ [movement]: 1 });
+            }
         };
 
         const keyUpHandler = (e: KeyboardEvent): void => {
@@ -90,7 +124,11 @@ export const useControls = (keyMapping: KeyMapping) => {
                 return;
             }
 
-            set({ [movement]: 0 });
+            if (isSnap(movement)) {
+                snapMoveState.current[movement] = 0;
+            } else {
+                setAnimated({ [movement]: 0 });
+            }
         };
 
         window.addEventListener('keydown', keyDownHandler);
@@ -100,7 +138,7 @@ export const useControls = (keyMapping: KeyMapping) => {
             window.removeEventListener('keydown', keyDownHandler);
             window.removeEventListener('keyup', keyUpHandler);
         };
-    }, [keyMapping, set]);
+    }, [keyMapping, setAnimated]);
 
-    return moveState;
+    return [animatedMoveState, snapMoveState];
 };

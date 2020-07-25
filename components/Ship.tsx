@@ -5,6 +5,7 @@ import { assertExists } from '../utils/utils';
 import { MIN_RADIUS, MAX_RADIUS } from '../utils/constants';
 import * as THREE from 'three';
 import { Vectors } from '../utils/vectorUtils';
+import { useLiveBullets } from './Bullets/BulletContext';
 
 const MOVEMENT_EPSILON = 0.00001;
 
@@ -15,20 +16,22 @@ const MOVEMENT_EPSILON = 0.00001;
 const ORBIT_SPEED = 0.03;
 const ROLL_SPEED = 0.03;
 const FORWARDS_SPEED = 0.5;
-// const SHOT_RECOVERY_TIME = 0.15;
+const SHOT_RECOVERY_TIME = 0.15;
 const CAMERA_DISTANCE = 2;
 const CAMERA_INTERTIA_FACTOR = 0.8;
 
 export const Ship: React.FC = () => {
-    const moveStateSpring = useControls(KEYBOARD_MAPPING);
+    const [moveStateSpring, moveStateSnap] = useControls(KEYBOARD_MAPPING);
     const mesh = useRef<THREE.Mesh>();
     const { camera } = useThree();
     const shipGeometry = useShipGeometry();
+    const shotDelta = useRef<number>(0);
+    const { spawnBullet } = useLiveBullets();
 
-    useFrame(() => {
+    useFrame((_state, delta) => {
         updateDepth();
         updateOrbit();
-        // updateShots();
+        updateShots(delta);
         updateCamera();
     });
 
@@ -85,6 +88,21 @@ export const Ship: React.FC = () => {
         yAxis.applyAxisAngle(zAxis, roll * ROLL_SPEED);
         mesh.current.up.copy(yAxis);
         mesh.current.lookAt(0, 0, 0);
+    };
+
+    const updateShots = (delta: number) => {
+        assertExists(shotDelta.current);
+        assertExists(mesh.current);
+
+        shotDelta.current += delta;
+
+        if (
+            shotDelta.current > SHOT_RECOVERY_TIME &&
+            moveStateSnap.current[Movements.shoot] === 1
+        ) {
+            shotDelta.current = 0;
+            spawnBullet(mesh.current.position.clone());
+        }
     };
 
     const updateCamera = () => {

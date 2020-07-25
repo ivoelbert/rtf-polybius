@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createRef, useState, useRef } from 'react';
 import { AsteroidProps } from './Asteroid';
 import { Arrays } from '../../utils/arrayUtils';
 import { Vectors } from '../../utils/vectorUtils';
@@ -8,15 +8,16 @@ const MAX_ASTEROIDS = 50;
 export type SpawnAsteroidAction = () => void;
 export type DisposeAsteroidAction = (id: number) => void;
 
-type NonDisposable<T> = Omit<T, 'dispose'>;
+type BaseAsteroidProps = Omit<AsteroidProps, 'dispose' | 'mesh'>;
 
-export interface AsteroidContext {
+export interface AsteroidData {
     asteroidProps: AsteroidProps[];
-    spawnAsteroid(): void;
+    spawnAsteroid: SpawnAsteroidAction;
+    disposeAsteroid: DisposeAsteroidAction;
 }
 
-export const useAsteroids = (): AsteroidContext => {
-    const [liveAsteroids, setLiveAsteroids] = useState<NonDisposable<AsteroidProps>[]>(() => {
+export const useAsteroids = (): AsteroidData => {
+    const [liveAsteroids, setLiveAsteroids] = useState<BaseAsteroidProps[]>(() => {
         return Arrays.tabulate(MAX_ASTEROIDS, (index) => ({
             id: index,
             isLive: false,
@@ -43,10 +44,13 @@ export const useAsteroids = (): AsteroidContext => {
         setLiveAsteroids(newLiveAsteroids);
     };
 
-    const asteroidProps = liveAsteroids.map((props) => ({
+    const refs = useRef(liveAsteroids.map(() => createRef<THREE.Mesh>()));
+
+    const asteroidProps = liveAsteroids.map((props, index) => ({
         ...props,
+        mesh: refs.current[index],
         dispose: () => disposeAsteroid(props.id),
     }));
 
-    return { asteroidProps, spawnAsteroid };
+    return { asteroidProps, spawnAsteroid, disposeAsteroid };
 };

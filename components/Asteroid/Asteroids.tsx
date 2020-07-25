@@ -1,10 +1,10 @@
 import React from 'react';
 import { Asteroid } from './Asteroid';
 import { useInterval } from '../../hooks/useInterval';
-import { useAsteroids } from './useAsteroids';
+import { useLiveAsteroids } from './AsteroidContext';
 
 export const Asteroids: React.FC = () => {
-    const { asteroidProps, spawnAsteroid } = useAsteroids();
+    const { asteroidProps, spawnAsteroid } = useLiveAsteroids();
 
     useInterval(spawnAsteroid, 5000);
 

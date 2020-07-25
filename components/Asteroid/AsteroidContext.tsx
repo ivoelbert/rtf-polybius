@@ -1,34 +1,17 @@
-import React, { useRef, useContext, useEffect } from 'react';
-import * as THREE from 'three';
+import React, { useContext } from 'react';
 import { createVoidContext } from '../../utils/voidContext';
+import { AsteroidData, useAsteroids } from './useAsteroids';
 
-type AsteroidContext = React.MutableRefObject<Set<React.MutableRefObject<THREE.Mesh | undefined>>>;
+type AsteroidContext = AsteroidData;
 
 const AsteroidContextValue = React.createContext<AsteroidContext>(createVoidContext());
 
 export const AsteroidContextProvider: React.FC = ({ children }) => {
-    const value = useRef(new Set<React.MutableRefObject<THREE.Mesh>>());
+    const value = useAsteroids();
 
     return <AsteroidContextValue.Provider value={value}>{children}</AsteroidContextValue.Provider>;
 };
 
 export const useLiveAsteroids = (): AsteroidContext => {
     return useContext(AsteroidContextValue);
-};
-
-export const useAsteroidRegister = (
-    mesh: React.MutableRefObject<THREE.Mesh | undefined>,
-    isLive: boolean
-): void => {
-    const liveAsteroids = useLiveAsteroids();
-
-    useEffect(() => {
-        if (isLive) {
-            liveAsteroids.current.add(mesh);
-        }
-
-        return () => {
-            liveAsteroids.current.delete(mesh);
-        };
-    }, [isLive]);
 };
