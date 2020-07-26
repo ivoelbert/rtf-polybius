@@ -44,7 +44,7 @@ export const Effects: React.FC = () => {
         <effectComposer ref={composer} args={[gl]}>
             <renderPass attachArray="passes" scene={scene} camera={camera} />
             <unrealBloomPass attachArray="passes" args={[aspect, 1.1, 1, 0]} />
-            <glitchPass attachArray="passes" goWild={true} enabled={isGlitchActive} />
+            {/* <glitchPass attachArray="passes" goWild={true} enabled={isGlitchActive} /> */}
         </effectComposer>
     );
 };
