@@ -9,7 +9,10 @@ export const useToggleAfterTimeout = (timeout: number): [boolean, SetWithTimeout
     const setWithTimeout = useCallback(() => {
         setValue(true);
 
-        clearTimeout(timeoutId.current);
+        if (timeoutId.current !== undefined) {
+            clearTimeout(timeoutId.current);
+        }
+
         timeoutId.current = setTimeout(() => {
             setValue(false);
         }, timeout) as any;
