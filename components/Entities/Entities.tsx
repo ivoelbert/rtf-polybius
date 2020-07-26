@@ -1,6 +1,6 @@
 import React from 'react';
 import { Center } from '../Center';
-import { Ship } from '../Ship';
+import { Ship } from '../Ship/Ship';
 import { Effects } from '../Effects';
 import { Asteroids } from '../Asteroid/Asteroids';
 import { EntitiesProvider } from './EntitiesProvider';

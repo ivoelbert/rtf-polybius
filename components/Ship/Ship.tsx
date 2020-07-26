@@ -1,13 +1,21 @@
 import React, { useRef, useMemo } from 'react';
-import { useControls, KEYBOARD_MAPPING, Movements, readMovementSpring } from '../hooks/useControls';
+import {
+    useControls,
+    KEYBOARD_MAPPING,
+    Movements,
+    readMovementSpring,
+} from '../../hooks/useControls';
 import { useFrame, useThree } from 'react-three-fiber';
-import { assertExists } from '../utils/utils';
-import { MIN_RADIUS, MAX_RADIUS } from '../utils/constants';
+import { assertExists } from '../../utils/utils';
+import { MIN_RADIUS, MAX_RADIUS } from '../../utils/constants';
 import * as THREE from 'three';
-import { Vectors } from '../utils/vectorUtils';
-import { useLiveBullets } from './Bullets/BulletContext';
+import { Vectors } from '../../utils/vectorUtils';
+import { useLiveBullets } from '../Bullets/BulletContext';
+import { useShip } from './ShipContext';
 
 const MOVEMENT_EPSILON = 0.00001;
+
+export const SHIP_RADIUS = 1;
 
 /**
  * Consider making these stateful.
@@ -21,8 +29,8 @@ const CAMERA_DISTANCE = 2;
 const CAMERA_INTERTIA_FACTOR = 0.8;
 
 export const Ship: React.FC = () => {
+    const { mesh } = useShip();
     const [moveStateSpring, moveStateSnap] = useControls(KEYBOARD_MAPPING);
-    const mesh = useRef<THREE.Mesh>();
     const { camera } = useThree();
     const shipGeometry = useShipGeometry();
     const shotDelta = useRef<number>(0);
