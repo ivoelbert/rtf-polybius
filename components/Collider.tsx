@@ -7,11 +7,13 @@ import { assertExists } from '../utils/utils';
 import { useFrame } from 'react-three-fiber';
 import { useShip } from './Ship/ShipContext';
 import { SHIP_RADIUS } from './Ship/Ship';
+import { useEffects } from './Effects/EffectsContext';
 
 const useCollider = () => {
     const { asteroidProps } = useLiveAsteroids();
     const { bulletProps } = useLiveBullets();
     const { mesh: shipMesh } = useShip();
+    const { startGlitch } = useEffects();
 
     useFrame(() => {
         const liveAsteroids = asteroidProps.filter((props) => props.isLive);
@@ -36,7 +38,7 @@ const useCollider = () => {
 
             if (shipPosition.distanceTo(asteroidPosition) < ASTEROID_RADIUS + SHIP_RADIUS) {
                 asteroid.dispose();
-                console.log('OOPS!');
+                startGlitch();
             }
         }
     });

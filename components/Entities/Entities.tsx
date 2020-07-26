@@ -1,7 +1,7 @@
 import React from 'react';
 import { Center } from '../Center';
 import { Ship } from '../Ship/Ship';
-import { Effects } from '../Effects';
+import { Effects } from '../Effects/Effects';
 import { Asteroids } from '../Asteroid/Asteroids';
 import { EntitiesProvider } from './EntitiesProvider';
 import { Bullets } from '../Bullets/Bullets';
