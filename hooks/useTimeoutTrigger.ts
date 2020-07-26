@@ -7,6 +7,10 @@ export const useTimeoutTrigger = (delay: number): [boolean, TriggerAction] => {
 
     const trigger = () => {
         setValue(true);
+        let interval = setInterval(() => {
+            setValue(false);
+            clearInterval(interval);
+        }, delay);
     };
 
     return [value, trigger];
