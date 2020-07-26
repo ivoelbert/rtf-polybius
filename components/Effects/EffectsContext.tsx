@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { createVoidContext } from '../../utils/voidContext';
+import { useTimeoutTrigger } from '../../hooks/useTimeoutTrigger';
 
 type startGlitchAction = () => void;
 
@@ -11,9 +12,7 @@ interface EffectsContext {
 const EffectsContextValue = React.createContext<EffectsContext>(createVoidContext());
 
 export const EffectsContextProvider: React.FC = ({ children }) => {
-    const [isGlitchActive, setIsGlitchActive] = useState(false);
-
-    const startGlitch = () => setIsGlitchActive(true);
+    const [isGlitchActive, startGlitch] = useTimeoutTrigger(500);
 
     const value = {
         isGlitchActive,
