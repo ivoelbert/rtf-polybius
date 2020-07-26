@@ -1,11 +1,19 @@
-import React, { useRef, useMemo } from 'react';
-import { useControls, KEYBOARD_MAPPING, Movements, readMovementSpring } from '../hooks/useControls';
-import { useFrame, useThree } from 'react-three-fiber';
-import { assertExists } from '../utils/utils';
-import { MIN_RADIUS, MAX_RADIUS } from '../utils/constants';
 import * as THREE from 'three';
-import { Vectors } from '../utils/vectorUtils';
-import { useLiveBullets } from './Bullets/BulletContext';
+import React, { useRef, useMemo } from 'react';
+import { useFrame, useThree } from 'react-three-fiber';
+import {
+    useControls,
+    KEYBOARD_MAPPING,
+    readMovementSpring,
+    Movements,
+} from '../../hooks/useControls';
+import { useLiveBullets } from '../Bullets/BulletContext';
+import { assertExists } from '../../utils/utils';
+import { MIN_RADIUS, MAX_RADIUS } from '../../utils/constants';
+import { Vectors } from '../../utils/vectorUtils';
+import { useShip } from './ShipContext';
+
+export const SHIP_RADIUS = 1;
 
 const MOVEMENT_EPSILON = 0.00001;
 
@@ -21,8 +29,8 @@ const CAMERA_DISTANCE = 2;
 const CAMERA_INTERTIA_FACTOR = 0.8;
 
 export const Ship: React.FC = () => {
+    const { mesh } = useShip();
     const [moveStateSpring, moveStateSnap] = useControls(KEYBOARD_MAPPING);
-    const mesh = useRef<THREE.Mesh>();
     const { camera } = useThree();
     const shipGeometry = useShipGeometry();
     const shotDelta = useRef<number>(0);
