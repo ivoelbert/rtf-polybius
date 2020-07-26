@@ -21,7 +21,7 @@ declare global {
     }
 }
 
-extend({ EffectComposer, RenderPass, UnrealBloomPass, GlitchPass });
+extend({ EffectComposer, RenderPass, UnrealBloomPass });
 
 export const Effects: React.FC = () => {
     const composer = useRef<EffectComposer>();
@@ -38,7 +38,7 @@ export const Effects: React.FC = () => {
         composer.current.render();
     }, 2);
 
-    const { isGlitchActive } = useEffects();
+    // const { isGlitchActive } = useEffects();
 
     return (
         <effectComposer ref={composer} args={[gl]}>
