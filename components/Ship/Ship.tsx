@@ -15,7 +15,7 @@ import { useShip } from './ShipContext';
 
 const MOVEMENT_EPSILON = 0.00001;
 
-export const SHIP_RADIUS = 1;
+export const SHIP_RADIUS = 2;
 
 /**
  * Consider making these stateful.
