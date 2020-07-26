@@ -4,9 +4,7 @@ import { ReactThreeFiber, extend, useThree, useFrame } from 'react-three-fiber';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js';
 import { assertExists } from '../../utils/utils';
-import { useEffects } from './EffectsContext';
 
 type Object3D<T, P> = ReactThreeFiber.Object3DNode<T, P>;
 
@@ -16,7 +14,6 @@ declare global {
             effectComposer: Object3D<EffectComposer, typeof EffectComposer>;
             renderPass: Object3D<RenderPass, typeof RenderPass>;
             unrealBloomPass: Object3D<UnrealBloomPass, typeof UnrealBloomPass>;
-            glitchPass: Object3D<GlitchPass, typeof GlitchPass>;
         }
     }
 }

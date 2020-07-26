@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { createVoidContext } from '../../utils/voidContext';
-import { useToggleAfterTimeout } from '../../hooks/useToggleAfterTimeout';
 
 type startGlitchAction = () => void;
 
