@@ -7,6 +7,8 @@ export const useTimeoutTrigger = (delay: number): [boolean, TriggerAction] => {
 
     const trigger = () => {
         setValue(true);
+
+        // TODO: Find out why setTimeout blows up vercel
         let interval = setInterval(() => {
             setValue(false);
             clearInterval(interval);
