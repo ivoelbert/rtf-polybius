@@ -17,6 +17,9 @@ const useCollider = () => {
         const liveAsteroids = asteroidProps.filter((props) => props.isLive);
         const liveBullets = bulletProps.filter((props) => props.isLive);
 
+        assertExists(shipMesh.current);
+        const shipPosition = shipMesh.current.position;
+
         for (const asteroid of liveAsteroids) {
             assertExists(asteroid.mesh.current);
             const asteroidPosition = asteroid.mesh.current.position;
@@ -31,8 +34,6 @@ const useCollider = () => {
                 }
             }
 
-            assertExists(shipMesh.current);
-            const shipPosition = shipMesh.current.position;
             if (shipPosition.distanceTo(asteroidPosition) < ASTEROID_RADIUS + SHIP_RADIUS) {
                 asteroid.dispose();
                 console.log('OOPS!');
