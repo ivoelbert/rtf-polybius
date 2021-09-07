@@ -24,7 +24,7 @@
         "react-spring": "9.0.0-rc.3",
         "react-three-fiber": "^4.2.17",
         "remark": "^12.0.0",
-        "remark-html": "^11.0.1",
+        "remark-html": "^13.0.2",
         "sass": "^1.26.10",
         "three": "^0.118.3"
     },
