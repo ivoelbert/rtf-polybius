@@ -17,7 +17,7 @@
         "date-fns": "^2.11.1",
         "drei": "^0.0.64",
         "gray-matter": "^4.0.2",
-        "next": "9.3.5",
+        "next": "11.1.3",
         "next-transpile-modules": "^3.3.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
